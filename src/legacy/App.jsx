@@ -14,15 +14,11 @@ export default function App() {
       .then(data => setNetwork(data))
       .catch(e => console.error(e));
       
-    const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-    const wsUrl = `${protocol}//${window.location.host}/ws`;
-    const ws = new WebSocket(wsUrl);
-    ws.onmessage = (event) => {
-      const state = JSON.parse(event.data);
-      setStatus(state);
-    };
-    
-    return () => ws.close();
+    // Engine heartbeat (replaces the FastAPI WebSocket, which cannot run here)
+    const poll = () => fetch('/api/status').then(r => r.json()).then(setStatus).catch(() => {});
+    poll();
+    const timer = setInterval(poll, 5000);
+    return () => clearInterval(timer);
   }, []);
 
   if (currentView === 'recommend') {
