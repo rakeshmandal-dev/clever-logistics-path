@@ -32,8 +32,8 @@ describe("threat intelligence + CARF", () => {
 describe("route recommender", () => {
   const rec = new RouteRecommender();
   it("SUEZ_BLOCK reroutes Shanghai -> Rotterdam around Suez", () => {
-    const normal: any = rec.recommend({ source: "PORT-SHANGHAI", destination: "PORT-ROTTERDAM" });
-    const blocked: any = rec.recommend({ source: "PORT-SHANGHAI", destination: "PORT-ROTTERDAM", scenario: "SUEZ_BLOCK" });
+    const normal: any = rec.recommend({ source: "PORT-SHANGHAI", destination: "PORT-ROTTERDAM", transport_preference: "sea" });
+    const blocked: any = rec.recommend({ source: "PORT-SHANGHAI", destination: "PORT-ROTTERDAM", scenario: "SUEZ_BLOCK", transport_preference: "sea" });
     const top = blocked.recommendations[0];
     const hubs = top.legs.map((l: any) => l.to);
     console.log("normal:", normal.recommendations.map((r: any) => `${r.persona} ${r.adjusted_eta}h ${r.legs.map((l: any) => l.to).join(">")}`));
