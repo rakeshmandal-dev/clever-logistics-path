@@ -10,33 +10,141 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ApiCitiesRouteImport } from './routes/api/cities'
+import { Route as ApiNetworkRouteImport } from './routes/api/network'
+import { Route as ApiRecommendRouteImport } from './routes/api/recommend'
+import { Route as ApiScenariosRouteImport } from './routes/api/scenarios'
+import { Route as ApiStatusRouteImport } from './routes/api/status'
+import { Route as ApiSuppliersRouteImport } from './routes/api/suppliers'
+import { Route as ApiHubsIndexRouteImport } from './routes/api/hubs.index'
+import { Route as ApiHubsSearchRouteImport } from './routes/api/hubs.search'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiCitiesRoute = ApiCitiesRouteImport.update({
+  id: '/api/cities',
+  path: '/api/cities',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiNetworkRoute = ApiNetworkRouteImport.update({
+  id: '/api/network',
+  path: '/api/network',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiRecommendRoute = ApiRecommendRouteImport.update({
+  id: '/api/recommend',
+  path: '/api/recommend',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiScenariosRoute = ApiScenariosRouteImport.update({
+  id: '/api/scenarios',
+  path: '/api/scenarios',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiStatusRoute = ApiStatusRouteImport.update({
+  id: '/api/status',
+  path: '/api/status',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiSuppliersRoute = ApiSuppliersRouteImport.update({
+  id: '/api/suppliers',
+  path: '/api/suppliers',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiHubsIndexRoute = ApiHubsIndexRouteImport.update({
+  id: '/api/hubs/',
+  path: '/api/hubs/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiHubsSearchRoute = ApiHubsSearchRouteImport.update({
+  id: '/api/hubs/search',
+  path: '/api/hubs/search',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/api/cities': typeof ApiCitiesRoute
+  '/api/network': typeof ApiNetworkRoute
+  '/api/recommend': typeof ApiRecommendRoute
+  '/api/scenarios': typeof ApiScenariosRoute
+  '/api/status': typeof ApiStatusRoute
+  '/api/suppliers': typeof ApiSuppliersRoute
+  '/api/hubs/search': typeof ApiHubsSearchRoute
+  '/api/hubs/': typeof ApiHubsIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/api/cities': typeof ApiCitiesRoute
+  '/api/network': typeof ApiNetworkRoute
+  '/api/recommend': typeof ApiRecommendRoute
+  '/api/scenarios': typeof ApiScenariosRoute
+  '/api/status': typeof ApiStatusRoute
+  '/api/suppliers': typeof ApiSuppliersRoute
+  '/api/hubs/search': typeof ApiHubsSearchRoute
+  '/api/hubs': typeof ApiHubsIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/api/cities': typeof ApiCitiesRoute
+  '/api/network': typeof ApiNetworkRoute
+  '/api/recommend': typeof ApiRecommendRoute
+  '/api/scenarios': typeof ApiScenariosRoute
+  '/api/status': typeof ApiStatusRoute
+  '/api/suppliers': typeof ApiSuppliersRoute
+  '/api/hubs/search': typeof ApiHubsSearchRoute
+  '/api/hubs/': typeof ApiHubsIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/api/cities'
+    | '/api/network'
+    | '/api/recommend'
+    | '/api/scenarios'
+    | '/api/status'
+    | '/api/suppliers'
+    | '/api/hubs/search'
+    | '/api/hubs/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/api/cities'
+    | '/api/network'
+    | '/api/recommend'
+    | '/api/scenarios'
+    | '/api/status'
+    | '/api/suppliers'
+    | '/api/hubs/search'
+    | '/api/hubs'
+  id:
+    | '__root__'
+    | '/'
+    | '/api/cities'
+    | '/api/network'
+    | '/api/recommend'
+    | '/api/scenarios'
+    | '/api/status'
+    | '/api/suppliers'
+    | '/api/hubs/search'
+    | '/api/hubs/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  ApiCitiesRoute: typeof ApiCitiesRoute
+  ApiNetworkRoute: typeof ApiNetworkRoute
+  ApiRecommendRoute: typeof ApiRecommendRoute
+  ApiScenariosRoute: typeof ApiScenariosRoute
+  ApiStatusRoute: typeof ApiStatusRoute
+  ApiSuppliersRoute: typeof ApiSuppliersRoute
+  ApiHubsSearchRoute: typeof ApiHubsSearchRoute
+  ApiHubsIndexRoute: typeof ApiHubsIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,11 +156,75 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/cities': {
+      id: '/api/cities'
+      path: '/api/cities'
+      fullPath: '/api/cities'
+      preLoaderRoute: typeof ApiCitiesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/network': {
+      id: '/api/network'
+      path: '/api/network'
+      fullPath: '/api/network'
+      preLoaderRoute: typeof ApiNetworkRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/recommend': {
+      id: '/api/recommend'
+      path: '/api/recommend'
+      fullPath: '/api/recommend'
+      preLoaderRoute: typeof ApiRecommendRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/scenarios': {
+      id: '/api/scenarios'
+      path: '/api/scenarios'
+      fullPath: '/api/scenarios'
+      preLoaderRoute: typeof ApiScenariosRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/status': {
+      id: '/api/status'
+      path: '/api/status'
+      fullPath: '/api/status'
+      preLoaderRoute: typeof ApiStatusRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/suppliers': {
+      id: '/api/suppliers'
+      path: '/api/suppliers'
+      fullPath: '/api/suppliers'
+      preLoaderRoute: typeof ApiSuppliersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/hubs/': {
+      id: '/api/hubs/'
+      path: '/api/hubs'
+      fullPath: '/api/hubs/'
+      preLoaderRoute: typeof ApiHubsIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/hubs/search': {
+      id: '/api/hubs/search'
+      path: '/api/hubs/search'
+      fullPath: '/api/hubs/search'
+      preLoaderRoute: typeof ApiHubsSearchRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  ApiCitiesRoute: ApiCitiesRoute,
+  ApiNetworkRoute: ApiNetworkRoute,
+  ApiRecommendRoute: ApiRecommendRoute,
+  ApiScenariosRoute: ApiScenariosRoute,
+  ApiStatusRoute: ApiStatusRoute,
+  ApiSuppliersRoute: ApiSuppliersRoute,
+  ApiHubsSearchRoute: ApiHubsSearchRoute,
+  ApiHubsIndexRoute: ApiHubsIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
