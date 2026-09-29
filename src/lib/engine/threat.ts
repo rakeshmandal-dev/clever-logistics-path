@@ -94,6 +94,18 @@ export interface CarfAudit {
 
 const round = (x: number, d: number) => Math.round(x * 10 ** d) / 10 ** d;
 
+const wordRe = new Map<string, RegExp>();
+/** Whole-word match with optional s/es/ed/ing suffix ("port" does not match "airport"). */
+function hasWord(text: string, kw: string): boolean {
+  let re = wordRe.get(kw);
+  if (!re) {
+    const esc = kw.replace(/[.*+?^${}()|[\]\\]/g, "\\$&").replace(/\s+/g, "\\s+");
+    re = new RegExp(`\\b${esc}(?:s|es|ed|ing)?\\b`, "i");
+    wordRe.set(kw, re);
+  }
+  return re.test(text);
+}
+
 export class CARFFilter {
   relevanceMap: Record<string, string[]> = {
     air: ["airport", "flight", "airspace", "aviation", "aircraft", "cargo plane", "air cargo", "runway", "air traffic control", "atc", "air terminal"],
@@ -103,7 +115,7 @@ export class CARFFilter {
   };
   systemicTerms = [
     "flood", "typhoon", "hurricane", "storm", "earthquake", "war", "conflict",
-    "strike", "blockade", "sanctions", "protest", "cyberattack", "curfew", "quarantine", "closure", "geopolitical",
+    "blockade", "sanctions", "protest", "cyberattack", "curfew", "quarantine", "geopolitical",
   ];
 
   applyFilter(semanticScore: number, newsContext: string, transportMode: string): number {
@@ -113,17 +125,17 @@ export class CARFFilter {
     const news = newsContext.toLowerCase();
 
     const targetKws = this.relevanceMap[mode] ?? [];
-    const hasTarget = targetKws.some((k) => news.includes(k));
+    const hasTarget = targetKws.some((k) => hasWord(news, k));
     const otherKws = Object.entries(this.relevanceMap)
       .filter(([m]) => m !== mode)
       .flatMap(([, k]) => k);
-    const hasOther = otherKws.some((k) => news.includes(k));
-    const hasSystemic = this.systemicTerms.some((t) => news.includes(t));
+    const hasOther = otherKws.some((k) => hasWord(news, k));
+    const hasSystemic = this.systemicTerms.some((t) => hasWord(news, t));
 
     // False alarm: news targets another mode only, no systemic signal.
     if (hasOther && !hasTarget && !hasSystemic) return 0;
     // Maritime-specific news does not disrupt inland rail/road legs unless it names them.
-    if ((mode === "rail" || mode === "road") && ["port", "vessel", "maritime", "dock", "berth"].some((k) => news.includes(k))) {
+    if ((mode === "rail" || mode === "road") && ["port", "vessel", "maritime", "dock", "berth"].some((k) => hasWord(news, k))) {
       if (!hasTarget) return 0;
     }
     return semanticScore;

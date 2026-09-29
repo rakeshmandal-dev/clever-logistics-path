@@ -114,7 +114,7 @@ export class RouteRecommender {
     return path;
   }
 
-  recommend(req: RecommendInput) {
+  recommend(req: RecommendInput, rawCandidates = false): any {
     const overrides = req.overrides ?? {};
     const avoid = new Set(overrides.avoid_chokepoints ?? []);
     const costCeiling = overrides.cost_ceiling ?? 999999;
@@ -139,8 +139,8 @@ export class RouteRecommender {
     // Baseline (no-scenario) route per persona: did it traverse a disrupted node?
     const baselineHit: Record<string, boolean> = {};
     if (scenario) {
-      const base: any = this.recommend({ ...req, scenario: null });
-      for (const c of base.recommendations ?? []) baselineHit[c.persona] = c.legs.some((l: any) => disrupted.has(l.to));
+      const base: any = this.recommend({ ...req, scenario: null }, true);
+      for (const c of base.candidates ?? []) baselineHit[c.persona] = c.legs.some((l: any) => disrupted.has(l.to));
     }
 
     const candidates: any[] = [];
@@ -229,6 +229,7 @@ export class RouteRecommender {
         override_applied: !!(avoid.size || costCeiling < 999999 || reroute),
       });
     }
+    if (rawCandidates) return { candidates };
     if (!candidates.length) return { error: "No valid multimodal route found under current strategic constraints." };
 
     const key = (x: any): number[] => scenario
