@@ -43,4 +43,20 @@ describe("route recommender", () => {
     expect(top.ai_decision.reroute_active).toBe(true);
     expect(top.predicted_ml_delay).toBeGreaterThan(0);
   });
+  it("SUEZ_BLOCK yields non-zero scenario impact and an alternate route (deterministic)", () => {
+    const req = { source: "PORT-SHANGHAI", destination: "PORT-ROTTERDAM", transport_preference: "sea" };
+    const normal: any = rec.recommend(req);
+    const a: any = rec.recommend({ ...req, scenario: "SUEZ_BLOCK" });
+    const b: any = rec.recommend({ ...req, scenario: "SUEZ_BLOCK" });
+    expect(JSON.stringify(a)).toBe(JSON.stringify(b));
+    const sa = a.recommendations[0].scenario_audit;
+    expect(sa.scenario_id).toBe("SUEZ_BLOCK");
+    expect(sa.disruption_delay_hours).toBeGreaterThan(0);
+    expect(sa.affected_corridors.map((c: any) => c.id)).toContain("CHOKE-SUEZ");
+    expect(sa.bypasses_affected_corridor).toBe(true);
+    expect(sa.avoided_delay_hours).toBeGreaterThan(0);
+    const sig = (r: any) => r.legs.map((l: any) => l.to).join(">");
+    expect(sig(a.recommendations[0])).not.toBe(sig(normal.recommendations[0]));
+    expect(normal.recommendations[0].scenario_audit).toBeUndefined();
+  });
 });

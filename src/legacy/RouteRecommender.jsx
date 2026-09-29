@@ -359,7 +359,16 @@ const RouteRecommender = ({ onNavigate }) => {
                <div style={{marginBottom: '0.5rem', fontWeight: 700, color: '#f8fafc'}}>Forensic ETA Audit</div>
                <div>Transit: {recommendations[0].audit_trace.eta.transit}h</div>
                <div>Transfer: +{recommendations[0].audit_trace.eta.transfer}h</div>
-               <div>Scenario Impact: {recommendations[0].audit_trace.eta.scenario > 0 ? `+${recommendations[0].audit_trace.eta.scenario}h` : 'None'}</div>
+               {(() => {
+                 const sa = recommendations[0].scenario_audit;
+                 if (!sa) return <div>Scenario Impact: {recommendations[0].audit_trace.eta.scenario > 0 ? `+${recommendations[0].audit_trace.eta.scenario}h` : 'None'}</div>;
+                 return (<>
+                   <div>Scenario: {sa.scenario_name}</div>
+                   <div>Scenario Impact: +{sa.disruption_delay_hours}h @ {sa.disruption_threat_pct}% risk</div>
+                   <div>Affected Corridor: {sa.affected_corridors.map(a => a.name).join(', ')}</div>
+                   <div>Corridor Status: {sa.bypasses_affected_corridor ? `BYPASSED (+${sa.avoided_delay_hours}h avoided)` : `TRAVERSED (+${sa.absorbed_delay_hours}h absorbed)`}</div>
+                 </>);
+               })()}
             </div>
 
             <div className="audit-trace-box" style={{borderLeft: '4px solid #10b981'}}>
