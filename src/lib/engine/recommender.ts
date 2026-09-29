@@ -218,7 +218,7 @@ export class RouteRecommender {
         persona, primary_mode: "MULTIMODAL", legs,
         adjusted_eta: r1(totalTime), total_cost: r2(totalCost), threat_level: r2(maxThreat),
         predicted_ml_delay: r1(totalMl), audit_trace: trace,
-        explanation: this.forensic(persona, trace, maxThreat),
+        explanation: this.forensic(persona, trace, maxThreat, legs),
         ai_decision: {
           persona, risk_score_pct: r1(maxThreat * 100), adjusted_eta_hours: r1(totalTime),
           total_cost_usd: r2(totalCost), predicted_delay_hours: r1(totalMl),
