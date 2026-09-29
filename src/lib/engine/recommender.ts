@@ -136,6 +136,13 @@ export class RouteRecommender {
       return out;
     };
 
+    // Baseline (no-scenario) route per persona: did it traverse a disrupted node?
+    const baselineHit: Record<string, boolean> = {};
+    if (scenario) {
+      const base: any = this.recommend({ ...req, scenario: null });
+      for (const c of base.recommendations ?? []) baselineHit[c.persona] = c.legs.some((l: any) => disrupted.has(l.to));
+    }
+
     const candidates: any[] = [];
     for (const persona of ["FASTEST", "SAFEST", "BALANCED"] as const) {
       let currentAvoid = new Set(avoid);
@@ -206,7 +213,7 @@ export class RouteRecommender {
       trace.risk.baseline = r2(trace.risk.baseline); trace.risk.scenario = r2(trace.risk.scenario);
       if (totalCost > costCeiling || totalTime > maxDelay * 24) continue;
 
-      const reroute = !!scenario && !legs.some((l) => l.to in disruptions);
+      const reroute = !!scenario && !!baselineHit[persona] && !legs.some((l) => l.to in disruptions);
       candidates.push({
         persona, primary_mode: "MULTIMODAL", legs,
         adjusted_eta: r1(totalTime), total_cost: r2(totalCost), threat_level: r2(maxThreat),
@@ -251,7 +258,7 @@ export class RouteRecommender {
           disruption_threat_pct: r1(scenario.threat_level * 100),
           bypasses_affected_corridor: !hit,
           absorbed_delay_hours: c.audit_trace.eta.scenario,
-          avoided_delay_hours: hit ? 0 : scenario.delay_hours,
+          avoided_delay_hours: c.ai_decision.reroute_active ? scenario.delay_hours : 0,
         };
       }
     }
