@@ -11,7 +11,7 @@ export function getRankedSuppliers(category: string, disruptions: Record<string,
     let lead = s.base_lead_time_days, penalty = 0, inflation = 0;
     for (const [node, imp] of Object.entries(disruptions)) {
       if (node === s.location_hub || (s.transit_choke_points ?? []).includes(node)) {
-        const p = (imp.delay / 24) * 0.5; lead += p; penalty += p; inflation += imp.threat * 0.3;
+        const p = (imp.delay / 24) * 0.1; lead += p; penalty += p; inflation += imp.threat * 0.3;
       }
     }
     const leadScore = Math.max(0, 1 - lead / 30);

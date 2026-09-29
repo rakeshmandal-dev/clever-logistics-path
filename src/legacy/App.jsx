@@ -50,7 +50,7 @@ export default function App() {
           <div className="metric-card">
             <div style={{fontSize: '0.875rem', color: 'var(--text-muted)'}}>ML Brain</div>
             <div className="metric-value" style={{fontSize: '1rem', color: 'var(--supply-accent)'}}>
-              p85 Real-Data (Active)
+              p85 Delay Model (Calibrated Surrogate)
             </div>
           </div>
         </div>
@@ -74,7 +74,7 @@ export default function App() {
            <div style={{textAlign: 'center', color: 'var(--text-muted)'}}>
              <h3 style={{color: 'white', marginBottom: '1rem'}}>Global Supply Chain Core</h3>
              <p>Analyzing {network.nodes.length} Strategic Logistics Hubs</p>
-             <p>Live RSS Ingestion Active for all transit corridors.</p>
+             <p>Threat intel: built-in news signals + scenario overrides (no live RSS in this deployment).</p>
            </div>
         </div>
       </div>
@@ -88,7 +88,7 @@ export default function App() {
                <span>PROVENANCE: UNCTAD/STB</span>
              </div>
              <div className="decision-body">
-               Real-world historical metrics loaded for all nodes. No synthetic fallback active.
+               Per-mode delay floors/caps calibrated from historical p5/p95 analysis.
              </div>
           </div>
           <div className="decision-card">
@@ -96,7 +96,7 @@ export default function App() {
                <span>LATENCY: SUB-SECOND</span>
              </div>
              <div className="decision-body">
-               Live geocoding and news-anchored semantic scoring active.
+               Keyword-based semantic scoring + CARF modal screening active.
              </div>
           </div>
         </div>
