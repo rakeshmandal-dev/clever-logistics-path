@@ -59,4 +59,21 @@ describe("route recommender", () => {
     expect(sig(a.recommendations[0])).not.toBe(sig(normal.recommendations[0]));
     expect(normal.recommendations[0].scenario_audit).toBeUndefined();
   });
+  it("no bypass badge when scenario does not affect the baseline route", () => {
+    for (const q of [
+      { source: "RAIL-DELHI", destination: "PORT-KOCHI", scenario: "LA_PORT_STRIKE" },
+      { source: "PORT-SHANGHAI", destination: "PORT-ROTTERDAM", scenario: "RED_SEA_CONFLICT", transport_preference: "sea" },
+    ]) {
+      const res: any = rec.recommend(q);
+      console.log(q.scenario, res.error ?? res.recommendations.map((r: any) => `${r.persona} reroute=${r.ai_decision.reroute_active} avoided=${r.scenario_audit?.avoided_delay_hours}`));
+      for (const r of res.recommendations ?? []) {
+        expect(r.ai_decision.reroute_active).toBe(false);
+        expect(r.scenario_audit.avoided_delay_hours).toBe(0);
+      }
+    }
+  });
+  it("CARF whole-word matching: airport news is not a port threat", () => {
+    expect(carf.applyFilter(0.6, "Airport closed, flights cancelled", "sea")).toBe(0);
+    expect(carf.applyFilter(0.6, "Warehouse fire at depot", "sea")).toBe(0);
+  });
 });
