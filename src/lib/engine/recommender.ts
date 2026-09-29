@@ -237,6 +237,24 @@ export class RouteRecommender {
       const sig = c.legs.map((l: any) => l.to).join("|");
       if (!seen.has(sig)) { seen.add(sig); final.push(c); }
     }
+    if (scenario) {
+      const affected = scenario.affected_nodes.map((id) => {
+        const n = [...this.G.nodes.values()].find((x) => x.physical_id === id);
+        return { id, name: n?.display_name ?? id };
+      });
+      for (const c of final) {
+        const hit = c.legs.some((l: any) => l.to in disruptions);
+        c.scenario_audit = {
+          scenario_id: req.scenario, scenario_name: scenario.name,
+          affected_corridors: affected,
+          disruption_delay_hours: scenario.delay_hours,
+          disruption_threat_pct: r1(scenario.threat_level * 100),
+          bypasses_affected_corridor: !hit,
+          absorbed_delay_hours: c.audit_trace.eta.scenario,
+          avoided_delay_hours: hit ? 0 : scenario.delay_hours,
+        };
+      }
+    }
     return {
       origin: req.source, destination: req.destination,
       active_scenario: scenario ? scenario.name : null,
