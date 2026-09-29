@@ -218,7 +218,7 @@ export class RouteRecommender {
         persona, primary_mode: "MULTIMODAL", legs,
         adjusted_eta: r1(totalTime), total_cost: r2(totalCost), threat_level: r2(maxThreat),
         predicted_ml_delay: r1(totalMl), audit_trace: trace,
-        explanation: this.forensic(persona, trace, maxThreat),
+        explanation: this.forensic(persona, trace, maxThreat, legs),
         ai_decision: {
           persona, risk_score_pct: r1(maxThreat * 100), adjusted_eta_hours: r1(totalTime),
           total_cost_usd: r2(totalCost), predicted_delay_hours: r1(totalMl),
@@ -279,11 +279,12 @@ export class RouteRecommender {
     return `Optimal Pareto Balance: Balances landed freight cost ($${cost}) against ${r1(trace.eta.transit + trace.eta.transfer)}h ETA. ML quantile delay factor of ${ml}h factored into total reliability.`;
   }
 
-  private forensic(persona: string, trace: any, threat: number) {
-    const cost = trace.cost.transit + trace.cost.transfer + trace.cost.scenario;
-    const transfers = Math.round(trace.eta.transfer / 4);
-    if (persona === "FASTEST") return `Velocity-optimized. Mode handoffs applied to reduce transit time by ${r1(trace.eta.transit * 0.2)}h vs pure surface transport. ${transfers} strategic transfers enforced.`;
-    if (persona === "SAFEST") return `Resilience-optimized. Path selection reduces risk exposure by ${Math.round((1 - threat) * 100)}% by bypassing volatile corridors. Lead-time integrity prioritized over cost.`;
-    return `Economic-optimized. Multimodal balance reduces total landed cost by ${Math.round(cost * 0.15)}% vs premium express AIR, while maintaining defensible lead times.`;
+  private forensic(persona: string, trace: any, threat: number, legs: any[]) {
+    const totalTime = r1(trace.eta.transit + trace.eta.transfer);
+    const handoffs = legs.filter((l) => l.type === "transfer").length;
+    const cost = (trace.cost.transit + trace.cost.transfer).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    if (persona === "FASTEST") return `Lowest total ETA ${totalTime}h, ${handoffs} mode handoffs`;
+    if (persona === "SAFEST") return `Peak leg risk ${r1(threat * 100)}%, avoids disrupted corridors`;
+    return `Total cost $${cost}, ETA ${totalTime}h`;
   }
 }
